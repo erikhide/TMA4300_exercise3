@@ -1,0 +1,17 @@
+---
+title: "TMA4300 -- Exercise 3"
+site: bookdown::bookdown_site
+author: 
+- "Erik Hide Sæternes"
+- "Silius Mortensønn Vandeskog"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: 
+  bookdown::pdf_document2:
+    toc: no
+    fig_caption: yes
+    number_sections: no
+---
+
+```{r setup, include=FALSE, cache = FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE, autodep = TRUE, warning = FALSE, message = FALSE, error = FALSE, out.width = "70%", fig.align = "center")
+```
