@@ -16,4 +16,10 @@ output:
 knitr::opts_chunk$set(echo = TRUE, cache = TRUE, autodep = TRUE, warning = FALSE, message = FALSE, error = FALSE, out.width = "70%", fig.align = "center")
 source("files/probAhelp.R")
 source("files/probAdata.R")
+source("code/problem_A.R")
+knitr::read_chunk("code/problem_A.R")
 ```
+
+```{r, child = "text/problem_A.Rmd"}
+```
+
