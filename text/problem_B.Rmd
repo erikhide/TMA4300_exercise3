@@ -9,9 +9,7 @@
 ###################
 
 
-bilirubin <- read.table("../files/bilirubin.txt", header = TRUE)
-
-bilirubin <- mutate(bilirubin, log_meas = log(meas))
+bilirubin <- read.table("../files/bilirubin.txt", header = TRUE) %>% as_tibble()
 
 ```
 
@@ -23,7 +21,7 @@ bilirubin <- mutate(bilirubin, log_meas = log(meas))
 ###################
 
 ggplot(data = bilirubin) +
-  geom_boxplot(aes(x = pers, y = log_meas, fill = pers)) +
+  geom_boxplot(aes(x = pers, y = log(meas), fill = pers)) +
   scale_fill_discrete(guide = FALSE) +
   labs(x = "person",
        y = expression(log(meas)))
@@ -31,8 +29,35 @@ ggplot(data = bilirubin) +
 ```
 ```{r}
 
-lm_1 <- lm(log_meas ~ pers, data = bilirubin)
+lm <- lm(log(meas) ~ pers, data = bilirubin)
 
-summary(lm_1)
+s <- summary(lm)
+fval <- s$fstatistic
+
+
 ```
 
+
+
+\subsection{2.}
+
+The function looks like this:
+
+```{r permTest}
+```
+
+\subsection{3.}
+
+```{r}
+n <- 999
+
+f_vec <- vector("numeric", n)
+
+for(i in 1:n){
+  f_vec[i] <- permTest(bilirubin)
+}
+
+ggplot(data = as.tibble(f_vec)) +
+  geom_histogram(aes(x = value), bins = 50, boundary = 0)
+
+```
