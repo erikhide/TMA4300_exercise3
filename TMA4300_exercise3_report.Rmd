@@ -18,6 +18,10 @@ source("files/probAhelp.R")
 source("files/probAdata.R")
 source("code/problem_A.R")
 knitr::read_chunk("code/problem_A.R")
+library(tidyverse)
+library(latex2exp)
+library(viridis)
+library(gridExtra)
 ```
 
 ```{r, child = "text/problem_A.Rmd"}

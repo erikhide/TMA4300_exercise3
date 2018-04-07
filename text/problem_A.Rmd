@@ -1,0 +1,50 @@
+\section{Problem A: Comparing $AR(2)$ parameter estimators using resampling of residuals}
+
+\subsection{1.}
+
+```{r}
+#######################################
+# Find estimators for beta and epsilon
+#######################################
+p <- 2
+x <- data3A$x
+
+betas <- ARp.beta.est(x, p)
+
+beta_ls <- betas$LS
+beta_la <- betas$LA
+
+epsilon_ls <- ARp.resid(x, beta_ls)
+epsilon_la <- ARp.resid(x, beta_la)
+```
+
+```{r}
+
+# 
+boot_iter <- 1500
+
+beta_mat_ls <- bootstrapA(x = x,
+                       beta = beta_ls,
+                       epsilon = epsilon_ls,
+                       boot_iter = boot_iter,
+                       type = "LS")
+
+
+displayBeta(samples = beta_mat_ls,
+            title = "Least squares")
+
+
+beta_mat_la <- bootstrapA(x = x,
+                       beta = beta_la,
+                       epsilon = epsilon_la,
+                       boot_iter = boot_iter,
+                       type = "LA")
+
+
+displayBeta(samples = beta_mat_ls,
+            title = "Least absolutes")
+
+
+```
+
+
