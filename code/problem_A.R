@@ -20,7 +20,7 @@ bootstrapA <- function(x, beta, epsilon, boot_iter, type){
   p <- 2
   
   beta_mat <- matrix(0, boot_iter, p)
-  colnames(beta_mat) <- c("beta_1", "beta_2")
+  colnames(beta_mat) <- c("beta[1]", "beta[2]")
   
   for(b in 1:boot_iter){
     
@@ -43,10 +43,9 @@ displayBeta <- function(samples, title = NULL, nbin = 50){
   data <- as_tibble(samples)
   data <- gather(data)
   
-  # Make the plot
   gg <- ggplot(data = data) +
     geom_histogram(aes(x = value), bins = nbin) +
-    facet_wrap(~key, scale = "free")
+    facet_wrap(~key, scale = "free", labeller = label_parsed)
   
   if(!is.null(title)){
     gg <- gg + labs(title = title)

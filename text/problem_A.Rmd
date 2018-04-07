@@ -48,3 +48,6 @@ displayBeta(samples = beta_mat_ls,
 ```
 
 
+
+\todo[inline]{how on earth can I explain if the LS estimator is optimal??}
+

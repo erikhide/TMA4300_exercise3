@@ -1,0 +1,38 @@
+\section{Problem B: Permutation test}
+
+\subsection{1.}
+
+```{r}
+
+###################
+# Prepare data
+###################
+
+
+bilirubin <- read.table("../files/bilirubin.txt", header = TRUE)
+
+bilirubin <- mutate(bilirubin, log_meas = log(meas))
+
+```
+
+
+```{r}
+
+####################
+# Create boxplot
+###################
+
+ggplot(data = bilirubin) +
+  geom_boxplot(aes(x = pers, y = log_meas, fill = pers)) +
+  scale_fill_discrete(guide = FALSE) +
+  labs(x = "person",
+       y = expression(log(meas)))
+
+```
+```{r}
+
+lm_1 <- lm(log_meas ~ pers, data = bilirubin)
+
+summary(lm_1)
+```
+

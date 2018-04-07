@@ -10,6 +10,8 @@ output:
     toc: no
     fig_caption: yes
     number_sections: no
+    includes:
+      in_header: text/style.sty
 ---
 
 ```{r setup, include=FALSE, cache = FALSE}
@@ -17,9 +19,10 @@ knitr::opts_chunk$set(echo = TRUE, cache = TRUE, autodep = TRUE, warning = FALSE
 source("files/probAhelp.R")
 source("files/probAdata.R")
 source("code/problem_A.R")
+source("code/problem_B.R")
+knitr::read_chunk("code/problem_B.R")
 knitr::read_chunk("code/problem_A.R")
 library(tidyverse)
-library(latex2exp)
 library(viridis)
 library(gridExtra)
 ```
@@ -27,3 +30,6 @@ library(gridExtra)
 ```{r, child = "text/problem_A.Rmd"}
 ```
 
+
+```{r, child = "text/problem_B.Rmd"}
+```
