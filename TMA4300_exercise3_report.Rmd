@@ -34,6 +34,8 @@ library(ggpubr)
 ```{r, child = "text/problem_A.Rmd"}
 ```
 
-
 ```{r, child = "text/problem_B.Rmd"}
+```
+
+```{r, child = "text/problem_C.Rmd"}
 ```

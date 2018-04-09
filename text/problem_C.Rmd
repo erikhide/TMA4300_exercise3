@@ -1,0 +1,16 @@
+\section{Problem C: The EM-algorithm and bootstrapping}
+
+\subsection{1.}
+
+Due to the fact that all $x_1,...,x_n$, $y_1,...,y_n$ are independent random variables, the joint distribution of all the variables is simply the product of the marginal distributions of each variable. Since the $x_i$'s and $y_i$'s are exponentially distributed with intensity $\lambda_0$ and $\lambda_1$ respectively, the joint distribution given $\lambda_0$ and $\lambda_1$ becomes
+
+\begin{equation}
+f(x, y | \lambda_0, \lambda_1) = \prod_{i=1}^{n} \lambda_0 e^{-\lambda_0 x_i} \prod_{i=1}^{n} \lambda_1 e^{-\lambda_1 y_i}.
+\end{equation}
+
+Taking the natural logarithm we arrive at the log-likelihood function
+
+\begin{equation}
+\ln \left[f(x, y | \lambda_0, \lambda_1)\right] = n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i.
+\end{equation}
+
