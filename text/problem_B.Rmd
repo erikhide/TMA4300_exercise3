@@ -32,7 +32,7 @@ ggplot(data = bilirubin) +
 lm <- lm(log(meas) ~ pers, data = bilirubin)
 
 s <- summary(lm)
-fval <- s$fstatistic
+fval <- s$fstatistic[1]
 
 
 ```
@@ -58,6 +58,15 @@ for(i in 1:n){
 }
 
 ggplot(data = as.tibble(f_vec)) +
-  geom_histogram(aes(x = value), bins = 50, boundary = 0)
+  geom_histogram(aes(x = value), bins = 50, boundary = 0) +
+  geom_vline(xintercept = fval)
+
+
+p_val <- length(which(f_vec >= fval)) / n
+
+p_val
 
 ```
+\todo[inline]{this is just some ranting because I haven't worked with inference in a long time.}
+I think the way this works is that the permutation test was done because we assumed all coefficients equal and therefore could switch the data points. The p-val thus becomes the probability of more extreme f-values when the null hypothesis is true. It is equal to 0.03, so at a $5 \%$ significance level we reject the null hypothesis and assume different coefficients.
+
