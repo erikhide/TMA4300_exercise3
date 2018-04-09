@@ -10,4 +10,4 @@
 *_files
 *.html
 .log
-
+!exercise3_updated.pdf
