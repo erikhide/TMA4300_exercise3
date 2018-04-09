@@ -2,6 +2,8 @@
 
 \subsection{1.}
 
+
+
 ```{r}
 #######################################
 # Find estimators for beta and epsilon
@@ -16,38 +18,86 @@ beta_la <- betas$LA
 
 epsilon_ls <- ARp.resid(x, beta_ls)
 epsilon_la <- ARp.resid(x, beta_la)
+
+
 ```
 
-```{r}
 
-# 
+
+
+
+
+```{r}
+########################################################
+# Use bootstrapping to resample the parameter estimators
+########################################################
+
 boot_iter <- 1500
 
-beta_mat_ls <- bootstrapA(x = x,
+boot_ls <- bootstrapA(x = x,
                        beta = beta_ls,
                        epsilon = epsilon_ls,
                        boot_iter = boot_iter,
                        type = "LS")
 
 
-displayBeta(samples = beta_mat_ls,
-            title = "Least squares")
 
-
-beta_mat_la <- bootstrapA(x = x,
+boot_la <- bootstrapA(x = x,
                        beta = beta_la,
                        epsilon = epsilon_la,
                        boot_iter = boot_iter,
                        type = "LA")
 
+beta_mat_ls <- boot_ls$beta_mat
+beta_mat_la <- boot_la$beta_mat
 
-displayBeta(samples = beta_mat_ls,
-            title = "Least absolutes")
 
+
+displayBeta(samples = beta_mat_la,
+            samples_2 = beta_mat_ls,
+            names = c("LA", "LS"))
 
 ```
 
+So we find that the LA is much better because the variance is crazy lower with LA than witgh LS.
+
+```{r}
+###############################################################
+# Estimate standard deviation and bias for parameter estimators
+###############################################################
+
+sd_all <- data.frame(LA = c(sd(beta_mat_la[, 1]),
+                            sd(beta_mat_la[, 2])),
+                     LS = c(sd(beta_mat_ls[, 1]),
+                            sd(beta_mat_ls[, 2])))
+
+row.names(sd_all) <- c("beta_1", "beta_2")
+format(sd_all, digits = 3)
+
+bias_all <- data.frame(LA = c(mean(beta_mat_la[, 1]),
+                            mean(beta_mat_la[, 2])) - beta_la,
+                     LS = c(mean(beta_mat_ls[, 1]),
+                            mean(beta_mat_ls[, 2])) - beta_ls)
+
+row.names(bias_all) <- c("beta_1", "beta_2")
+format(bias_all, digits = 3)
+
+```
+
+```{r}
+
+x_pred_ls <- boot_ls$x_pred
+x_pred_la <- boot_la$x_pred
 
 
-\todo[inline]{how on earth can I explain if the LS estimator is optimal??}
+z <- qnorm(1 - 0.025)
+
+
+ls_conf <- c(-1, 1) * z * sd(x_pred_ls) + mean(x_pred_ls)
+la_conf <- c(-1, 1) * z * sd(x_pred_la) + mean(x_pred_la)
+
+ls_conf
+la_conf
+```
+
 
