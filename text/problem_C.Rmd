@@ -2,7 +2,7 @@
 
 \subsection{1.}
 
-Due to the fact that all $x_1,...,x_n$, $y_1,...,y_n$ are independent random variables, the joint distribution of all the variables is simply the product of the marginal distributions of each variable. Since the $x_i$'s and $y_i$'s are exponentially distributed with intensity $\lambda_0$ and $\lambda_1$ respectively, the joint distribution given $\lambda_0$ and $\lambda_1$ becomes
+Due to the fact that all $x_1,...,x_n$, $y_1,...,y_n$ are independent random variables, the joint distribution of all the variables is simply the product of the marginal distributions of each variable. Since the $x_i$'s and $y_i$'s are exponentially distributed with intensities $\lambda_0$ and $\lambda_1$ respectively, the joint distribution given $\lambda_0$ and $\lambda_1$ becomes
 
 \begin{equation}
 f(x, y | \lambda_0, \lambda_1) = \prod_{i=1}^{n} \lambda_0 e^{-\lambda_0 x_i} \prod_{i=1}^{n} \lambda_1 e^{-\lambda_1 y_i}.
@@ -14,14 +14,14 @@ Taking the natural logarithm we arrive at the log-likelihood function
 \ln \left[f(x, y | \lambda_0, \lambda_1)\right] = n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i.
 \end{equation}
 
-The expected value of this log-likelihood function given $z = (z_1,...,z_n)$ and $u = (u_1,...,u_n)$, where $z_i = \max{(x_i, y_i)}$ and $u_i = I(x_i \geqslant y_i)$ for $i = 1,...,n$, can be written as
+The expected value of this log-likelihood function given $z = (z_1,...,z_n)$ and $u = (u_1,...,u_n)$, where $z_i = \max{\{x_i, y_i\}}$ and $u_i = I(x_i \geqslant y_i)$ for $i = 1,...,n$, can be written as
 
-\begin{align}
+\begin{align*}
 &E\left[n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}\right]\\
 &= n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} E[x_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}] - \lambda_1 \sum_{i=1}^{n} E[y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}],
-\end{align}
+\end{align*}
 
-since $n$, $\lambda_0$ and $\lambda_1$ are constants. Now all we have to do is find the expected value of $x_i$ and $y_i$ when $z_i$, $u_i$, $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ are known. There are two cases to consider: i) $x_i \geqslant y_i$ implying that $z_i = x_i$ and $u_i = 1$, and ii) $x_i < y_i$ implying that $z_i = y_i$ and $u_i = 0$. Assuming the first case, we simply get $E[x_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}] = z_i$, leaving us with the task of finding the expected value of $y_i$. The probability density function of $y_i$ becomes
+since $n$, $\lambda_0$ and $\lambda_1$ are constants. Now all we have to do is find the expected value of $x_i$ and $y_i$ when $z_i$, $u_i$, $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ are known. There are two cases to consider: _i)_ $x_i \geqslant y_i$ implying that $z_i = x_i$ and $u_i = 1$, and _ii)_ $x_i < y_i$ implying that $z_i = y_i$ and $u_i = 0$. Assuming case _i)_, we simply get $E[x_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}] = z_i$, leaving us with the task of finding the expected value of $y_i$. The probability density function of $y_i$ becomes
 
 \begin{equation}
 f(y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}) = f(y_i | x_i, x_i \geqslant y_i, \lambda_1^{(t)}) = \frac{\lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}}}{\int_{0}^{x_i} \lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}} dy_i} = \frac{\lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}}}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}},
@@ -29,8 +29,34 @@ f(y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}) = f(y_i | x_i, x_i \geqslant y_i
 
 with $y_i \in {[0,x_i]}$. The expected value is thus
 
-\begin{align}
+\begin{align*}
 \int_{0}^{x_i} y_i \frac{\lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}}}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}} dy_i &= \frac{1}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}} \int_{0}^{x_i} y_i \lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}} dy_i\\
 &= \frac{1}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}} \left(\frac{1}{\lambda_1^{(t)}} - \frac{x_i + \frac{1}{\lambda_1^{(t)}}}{\exp{\{\lambda_1^{(t)} x_i\}}}\right)\\
-&= \frac{\frac{\exp{\left\{\lambda_1^{(t)} x_i\right\}}}{\lambda_1^{(t)}} - x_i - \frac{1}{\lambda_1^{(t)}}}{\exp{\left\{\lambda_1^{(t)} x_i\right\}} - 1} = \frac{1}{\lambda_1^{(t)}} - \frac{x_i}{\exp{\left\{\lambda_1^{(t)} x_i\right\}} - 1}
-\end{align}
+&= \frac{\frac{\exp{\left\{\lambda_1^{(t)} x_i\right\}}}{\lambda_1^{(t)}} - x_i - \frac{1}{\lambda_1^{(t)}}}{\exp{\left\{\lambda_1^{(t)} x_i\right\}} - 1} = \frac{1}{\lambda_1^{(t)}} - \frac{x_i}{\exp{\left\{\lambda_1^{(t)} x_i\right\}} - 1}.
+\end{align*}
+
+Using $u_i$ as an indicator, and realising that for case _ii)_ the result is in some sense symmetric, the expected value of the log-likelihood function given $z$, $u$, $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ becomes
+
+\begin{align*}
+E\left[n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}\right] &= n (\ln(\lambda_0) + \ln(\lambda_1))\\
+&- \lambda_0 \sum_{i=1}^{n} \left[u_i z_i + (1 - u_i) \left(\frac{1}{\lambda_0^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_0^{(t)} z_i\right\}} - 1}\right)\right]\\
+&- \lambda_1 \sum_{i=1}^{n} \left[(1 - u_i) z_i + u_i \left(\frac{1}{\lambda_1^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_1^{(t)} z_i\right\}} - 1}\right)\right],
+\end{align*}
+
+which is precisely what we were asked to show.
+
+\subsection{2.}
+
+We want to find the values of $\lambda_0$ and $\lambda_1$ for which the result from 1 is maximised. By differentiating the expression with respect to $\lambda_0$ and setting it equal to 0, and then doing the same for $\lambda_1$, we get
+
+\begin{equation}
+\hat{\lambda}_0 = n \left(\sum_{i=1}^{n} \left(u_i z_i + (1 - u_i) \left(\frac{1}{\lambda_0^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_0^{(t)} z_i\right\}} - 1}\right)\right)\right)^{-1}
+\end{equation}
+
+and
+
+\begin{equation}
+\hat{\lambda}_1 = n \left(\sum_{i=1}^{n} \left((1 - u_i) z_i + u_i \left(\frac{1}{\lambda_1^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_1^{(t)} z_i\right\}} - 1}\right)\right)\right)^{-1}.
+\end{equation}
+
+Starting out with some intial values $\lambda_0^{(0)}$ and $\lambda_1^{(0)}$, we are know able to implement an EM algorithm by iteratively calculating $\lambda_0^{(t+1)} = \hat{\lambda}_0$ and $\lambda_1^{(t+1)} = \hat{\lambda}_1$ using $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$, and then using these new values in the next iteration step. The initial values should be chosen among legal values -- that is, positive values -- but except from this restriction, the actual choice of initial values does not really matter.
