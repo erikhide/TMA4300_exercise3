@@ -14,3 +14,23 @@ Taking the natural logarithm we arrive at the log-likelihood function
 \ln \left[f(x, y | \lambda_0, \lambda_1)\right] = n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i.
 \end{equation}
 
+The expected value of this log-likelihood function given $z = (z_1,...,z_n)$ and $u = (u_1,...,u_n)$, where $z_i = \max{(x_i, y_i)}$ and $u_i = I(x_i \geqslant y_i)$ for $i = 1,...,n$, can be written as
+
+\begin{align}
+&E\left[n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}\right]\\
+&= n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} E[x_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}] - \lambda_1 \sum_{i=1}^{n} E[y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}],
+\end{align}
+
+since $n$, $\lambda_0$ and $\lambda_1$ are constants. Now all we have to do is find the expected value of $x_i$ and $y_i$ when $z_i$, $u_i$, $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ are known. There are two cases to consider: i) $x_i \geqslant y_i$ implying that $z_i = x_i$ and $u_i = 1$, and ii) $x_i < y_i$ implying that $z_i = y_i$ and $u_i = 0$. Assuming the first case, we simply get $E[x_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}] = z_i$, leaving us with the task of finding the expected value of $y_i$. The probability density function of $y_i$ becomes
+
+\begin{equation}
+f(y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}) = f(y_i | x_i, x_i \geqslant y_i, \lambda_1^{(t)}) = \frac{\lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}}}{\int_{0}^{x_i} \lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}} dy_i} = \frac{\lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}}}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}},
+\end{equation}
+
+with $y_i \in {[0,x_i]}$. The expected value is thus
+
+\begin{align}
+\int_{0}^{x_i} y_i \frac{\lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}}}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}} dy_i &= \frac{1}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}} \int_{0}^{x_i} y_i \lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}} dy_i\\
+&= \frac{1}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}} \left(\frac{1}{\lambda_1^{(t)}} - \frac{x_i + \frac{1}{\lambda_1^{(t)}}}{\exp{\{\lambda_1^{(t)} x_i\}}}\right)\\
+&= \frac{\frac{\exp{\left\{\lambda_1^{(t)} x_i\right\}}}{\lambda_1^{(t)}} - x_i - \frac{1}{\lambda_1^{(t)}}}{\exp{\left\{\lambda_1^{(t)} x_i\right\}} - 1} = \frac{1}{\lambda_1^{(t)}} - \frac{x_i}{\exp{\left\{\lambda_1^{(t)} x_i\right\}} - 1}
+\end{align}
