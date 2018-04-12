@@ -2,7 +2,7 @@
 
 \subsection{1.}
 
-First, we find the estimators $\hat{\bm{\beta}}_{LS}$ and $\hat{\bm{\beta}}_{LA}$ using the function `ARp.beta.est`. Then, we calculate $\varepsilon_t$ for $t = 3, ..., T$ using the funciton `ARp.resid`.
+First, we find the estimators $\hat{\bm{\beta}}_{LS}$ and $\hat{\bm{\beta}}_{LA}$ using the function `ARp.beta.est()`. Then, we calculate $\varepsilon_t$ for $t = 3, ..., T$ using the funciton `ARp.resid()`.
 
 ```{r}
 #######################################
@@ -91,6 +91,10 @@ format(bias_all, digits = 3)
 ```
 
 It seems that the LS estimator is not the optimal estimator for this non-Gaussian AR(2) process. This is due to the fact that the estimated variance is much smaller for the LA estimator. 
+
+\subsection{2.}
+
+\todo[inline]{Finish this part!!!}
 
 
 ```{r}

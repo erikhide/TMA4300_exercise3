@@ -2,6 +2,8 @@
 
 \subsection{1.}
 
+We download the data file `bilirubin.txt` and display the logarithms of the concentrations in a boxplot. This can be seen in figure \@ref(fig:boxplot).
+
 ```{r}
 
 ###################
@@ -13,8 +15,9 @@ bilirubin <- read.table("../files/bilirubin.txt", header = TRUE) %>% as_tibble()
 
 ```
 
+(ref:boxplot) Boxplot of the logarithms of the concentrations of bilirubin (mg/dL) in blood samples from three young men, denoted p1, p2 and p3.
 
-```{r}
+```{r boxplot, fig.cap = "(ref:boxplot)"}
 
 ####################
 # Create boxplot
@@ -27,28 +30,45 @@ ggplot(data = bilirubin) +
        y = expression(log(meas)))
 
 ```
+
+\todo{comment on the boxplot}
+
+
+We fit the logarithms of concentrations as a linear model using the function `lm` in `R`. The linear model becomes
+
+\begin{equation}
+(\#eq:lm)
+\log Y_{ij} = \beta_i + \varepsilon_{ij};\ i = 1, 2, 3 \text{ and } j = 1, ..., n_i.
+\end{equation}
+
+To test the hypothesis $H_0:\ \beta_1 = \beta_2 = \beta_3$ versus $H_1:$ "at leat one of the $\beta$'s are different", we compute the F-statistic of the linear model.
+
 ```{r}
 
 lm <- lm(log(meas) ~ pers, data = bilirubin)
 
 s <- summary(lm)
-fval <- s$fstatistic[1]
-
+f <- s$fstatistic
+fval <- f[1]
 
 ```
 
-
+The F-statistic has a value of `r format(fval, digits = 3)` on 2 and 26 degrees of freedom, giving a p-value of `r format(pf(f[1], f[2], f[3], lower.tail = FALSE), digits = 3)`. At a $0.05$ significance level we reject $H_0$, meaning that the concentration of bilrubin is different for each person.
 
 \subsection{2.}
 
-The function looks like this:
+The function `permTest()` generates a permutation of the data between the three individuals, fits the model described in \@ref(eq:lm) and returns the computed F-statistic. This is done $n$ times, where $n$ is some arbitrary number. The function can be seen below.
 
 ```{r permTest}
 ```
 
 \subsection{3.}
 
-```{r}
+We perform a permutation test using the function `permTest()` with $n = 999$. A histogram with all the computed F-statistics can be seen in figure \@ref(fig:permtest).
+
+(ref:permtest) Insert caption here!
+
+```{r permtest, fig.cap = "(ref:permtest)"}
 n <- 999
 
 f_vec <- vector("numeric", n)
