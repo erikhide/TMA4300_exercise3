@@ -63,14 +63,14 @@ displayBeta <- function(samples, samples_2 = NULL, title = NULL, nbin = 50, name
   
   if(!is.null(samples_2)){
     gg_1 <- ggplot(data) + 
-      geom_histogram(aes(x = data$'beta[1]'), bins = nbin) +
+      geom_histogram(aes(x = data$"beta[1]"), bins = nbin) +
       facet_wrap(~name, labeller = label_parsed, scales = "free_y", ncol = 1) +
-      labs(title = expression(beta[1]), x = expression(beta))
+      labs(title = expression(hat(beta)[1]), x = expression(hat(beta)))
     
     gg_2 <- ggplot(data) + 
-      geom_histogram(aes(x = data$'beta[2]'), bins = nbin) +
+      geom_histogram(aes(x = data$"beta[2]"), bins = nbin) +
       facet_wrap(~name, labeller = label_parsed, scales = "free_y", ncol = 1) +
-      labs(title = expression(beta[2]), x = expression(beta))
+      labs(title = expression(hat(beta)[2]), x = expression(hat(beta)))
     
     gg <- ggarrange(gg_1, gg_2, ncol = 2)
     

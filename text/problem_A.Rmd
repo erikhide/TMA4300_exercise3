@@ -2,7 +2,7 @@
 
 \subsection{1.}
 
-
+First, we find the estimators $\hat{\bm{\beta}}_{LS}$ and $\hat{\bm{\beta}}_{LA}$ using the function `ARp.beta.est`. Then, we calculate $\varepsilon_t$ for $t = 3, ..., T$ using the funciton `ARp.resid`.
 
 ```{r}
 #######################################
@@ -23,16 +23,18 @@ epsilon_la <- ARp.resid(x, beta_la)
 ```
 
 
+Now we use the residual resampling bootstrap method to evaluate $\hat{\bm{\beta}}_{LS}$ and $\hat{\bm{\beta}}_{LA}$. We use $B = 2000$ bootstrap samples of the residuals and simulate new time series based on these. $x_1$ and $x_2$ is chosen as two random consecutive variables from the observed time series for each iteration. New predictors $\hat{\bm{\beta}}_{LS}^{(b)}$ and $\hat{\bm{\beta}}_{LA}^{(b)}$ are calculated for each $b = 1, ..., B$. A histogram of the sampled estimators can be found in figure \@ref(fig:boot-hist).
 
 
 
+(ref:fig-boot) Histograms displaying all samples of $\hat{\bm{\beta}}_{LS}^{(b)}$ and $\hat{\bm{\beta}}_{LA}^{(b)}$ from the residual resampling bootstrap method. $\hat{\beta}_1^{(b)}$ is displayed to the left for both loss functions, and $\hat{\beta}_2^{(b)}$ is displayed to the right. Estimators found using the LS loss function is displayed on the bottom and estimators found unsing the LA loss function is displayed on top.
 
-```{r}
+```{r boot-hist, fig.cap = "(ref:fig-boot)"}
 ########################################################
 # Use bootstrapping to resample the parameter estimators
 ########################################################
 
-boot_iter <- 1500
+boot_iter <- 2000
 
 beta_mat_ls <- bootstrapA(x = x,
                        beta = beta_ls,
@@ -59,7 +61,11 @@ displayBeta(samples = beta_mat_la,
 
 ```
 
-So we find that the LA is much better because the variance is crazy lower with LA than witgh LS.
+We can see from figure \@ref(fig:boot-hist) that the variance in $\hat{\bm{\beta}}_{LA}$ is much smaller than that of $\hat{\bm{\beta}}_{LS}$. The mean of the estimators seems to be approximately the same. We now try to estimate the bias and standard deviation of the estimators using the bootstrap samples. We estimate the standard deviation of $\hat{\bm{\beta}}$ by estimating the standard deviation of the samples $\hat{\bm{\beta}}^{(b)},\ b = 1, ..., B$. The bias of the estimators are found by subtracting $\hat{\bm{\beta}}$ from the mean of $\hat{\bm{\beta}}^{(b)}, \ b = 1, ..., B$. The numerical results can be seen in the print-out below. 
+
+<!-- \begin{equation} -->
+<!-- \widehat{SD(\hat{\bm{\beta}}_i) = \sqrt{\frac{1}{B - 1} \sum_{b = 1}^B }} -->
+<!-- \end{equation} -->
 
 ```{r}
 ###############################################################
@@ -71,7 +77,7 @@ sd_all <- data.frame(LA = c(sd(beta_mat_la[, 1]),
                      LS = c(sd(beta_mat_ls[, 1]),
                             sd(beta_mat_ls[, 2])))
 
-row.names(sd_all) <- c("beta_1", "beta_2")
+row.names(sd_all) <- c("sd_beta_1", "sd_beta_2")
 format(sd_all, digits = 3)
 
 bias_all <- data.frame(LA = c(mean(beta_mat_la[, 1]),
@@ -79,10 +85,13 @@ bias_all <- data.frame(LA = c(mean(beta_mat_la[, 1]),
                      LS = c(mean(beta_mat_ls[, 1]),
                             mean(beta_mat_ls[, 2])) - beta_ls)
 
-row.names(bias_all) <- c("beta_1", "beta_2")
+row.names(bias_all) <- c("bias_beta_1", "bias_beta_2")
 format(bias_all, digits = 3)
 
 ```
+
+It seems that the LS estimator is not the optimal estimator for this non-Gaussian AR(2) process. This is due to the fact that the estimated variance is much smaller for the LA estimator. 
+
 
 ```{r}
 
