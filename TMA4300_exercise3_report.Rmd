@@ -15,7 +15,16 @@ output:
 ---
 
 ```{r setup, include=FALSE, cache = FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE, autodep = TRUE, warning = FALSE, message = FALSE, error = FALSE, out.width = "80%", fig.align = "center")
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE, autodep = TRUE, warning = FALSE, message = FALSE, error = FALSE, out.width = "80%", fig.align = "center", size = "small")
+
+def.chunk.hook  <- knitr::knit_hooks$get("chunk")
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- def.chunk.hook(x, options)
+  ifelse(options$size != "normalsize", paste0("\\", options$size,"\n\n", x, "\n\n \\normalsize"), x)
+})
+
+
+
 source("files/probAhelp.R")
 source("files/probAdata.R")
 source("code/problem_A.R")
@@ -24,7 +33,6 @@ knitr::read_chunk("code/problem_B.R")
 knitr::read_chunk("code/problem_A.R")
 library(tidyverse)
 library(viridis)
-library(gridExtra)
 library(ggpubr)
 ```
 
