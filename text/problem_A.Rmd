@@ -34,9 +34,9 @@ Now we use the residual resampling bootstrap method to evaluate $\hat{\bm{\beta}
 # Use bootstrapping to resample the parameter estimators
 ########################################################
 
-boot_iter <- 2000
+boot_iter <- 8000
 
-beta_mat_ls <- bootstrapA(x = x,
+boot_ls <- bootstrapA(x = x,
                        beta = beta_ls,
                        epsilon = epsilon_ls,
                        boot_iter = boot_iter,
@@ -44,20 +44,21 @@ beta_mat_ls <- bootstrapA(x = x,
 
 
 
-beta_mat_la <- bootstrapA(x = x,
+boot_la <- bootstrapA(x = x,
                        beta = beta_la,
                        epsilon = epsilon_la,
                        boot_iter = boot_iter,
                        type = "LA")
 
-# beta_mat_ls <- boot_ls$beta_mat
-# beta_mat_la <- boot_la$beta_mat
-# 
+beta_mat_ls <- boot_ls$beta_mat
+beta_mat_la <- boot_la$beta_mat
+
 
 
 displayBeta(samples = beta_mat_la,
             samples_2 = beta_mat_ls,
-            names = c("LA", "LS"))
+            names = c("LA", "LS"),
+            nbin = 70)
 
 ```
 
@@ -94,20 +95,26 @@ It seems that the LS estimator is not the optimal estimator for this non-Gaussia
 
 \subsection{2.}
 
-\todo[inline]{Finish this part!!!}
+\todo[inline]{write some text!!}
 
 
 ```{r}
+# ---------------------------------------
+# Compute prediction intervals for x_101
+# ----------------------------------------
 
-### This is wrong!!
+x_pred_ls <- boot_ls$x_pred
+x_pred_la <- boot_la$x_pred
 
-# x_pred_ls <- boot_ls$x_pred
-# x_pred_la <- boot_la$x_pred
-# 
-# 
-# z <- qnorm(1 - 0.025)
-# 
-# 
+alpha <- 0.05
+
+q_ls <- quantile(x_pred_ls, probs = c(alpha / 2, 1 - alpha / 2))
+q_la <- quantile(x_pred_la, probs = c(alpha / 2, 1 - alpha / 2))
+
+
+q_ls
+q_la
+
 # ls_conf <- c(-1, 1) * z * sd(x_pred_ls) + mean(x_pred_ls)
 # la_conf <- c(-1, 1) * z * sd(x_pred_la) + mean(x_pred_la)
 # 

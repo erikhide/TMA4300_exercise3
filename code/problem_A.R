@@ -22,7 +22,7 @@ bootstrapA <- function(x, beta, epsilon, boot_iter, type){
   beta_mat <- matrix(0, boot_iter, p)
   colnames(beta_mat) <- c("beta[1]", "beta[2]")
   
-  # x_pred <- vector("numeric", boot_iter)
+  x_pred <- vector("numeric", boot_iter)
   
   for(b in 1:boot_iter){
     
@@ -34,16 +34,14 @@ bootstrapA <- function(x, beta, epsilon, boot_iter, type){
     betas_star <- ARp.beta.est(x_star, p)
     beta_mat[b, ] <- betas_star[type][[1]]
     
-    # x_101 <- beta_mat[b, 1] * x_star[t] + beta_mat[b, 2] * x_star[t - 1]
-    # x_pred[b] <- x_101
+    x_101 <- beta_mat[b, 1] * x[t] + beta_mat[b, 2] * x[t - 1] + sample(epsilon, size = 1)
+    x_pred[b] <- x_101
   }
   
-  # return(list(beta_mat = beta_mat,
-  #             x_pred = x_pred))
+  return(list(beta_mat = beta_mat,
+              x_pred = x_pred))
   
-  return(beta_mat)
 }
-
 
 
 displayBeta <- function(samples, samples_2 = NULL, title = NULL, nbin = 50, names = NULL){
@@ -63,12 +61,12 @@ displayBeta <- function(samples, samples_2 = NULL, title = NULL, nbin = 50, name
   
   if(!is.null(samples_2)){
     gg_1 <- ggplot(data) + 
-      geom_histogram(aes(x = data$"beta[1]"), bins = nbin) +
+      geom_histogram(aes(x = data$"beta[1]", y = ..density..), bins = nbin) +
       facet_wrap(~name, labeller = label_parsed, scales = "free_y", ncol = 1) +
       labs(title = expression(hat(beta)[1]), x = expression(hat(beta)))
     
     gg_2 <- ggplot(data) + 
-      geom_histogram(aes(x = data$"beta[2]"), bins = nbin) +
+      geom_histogram(aes(x = data$"beta[2]", y = ..density..), bins = nbin) +
       facet_wrap(~name, labeller = label_parsed, scales = "free_y", ncol = 1) +
       labs(title = expression(hat(beta)[2]), x = expression(hat(beta)))
     
