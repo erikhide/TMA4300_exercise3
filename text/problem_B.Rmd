@@ -88,8 +88,6 @@ ggplot(data = as.tibble(f_vec)) +
 
 p_val <- length(which(f_vec >= fval)) / n
 
-glue("The p-value for the permutation test is {format(p_val, digits = 3)}")
-
 ```
 
 We see that most of the F-statistics from the permutation test are smaller than that of the original data.
