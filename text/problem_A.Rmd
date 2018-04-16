@@ -5,9 +5,9 @@
 First, we find the estimators $\hat{\bm{\beta}}_{LS}$ and $\hat{\bm{\beta}}_{LA}$ using the function `ARp.beta.est()`. Then, we calculate $\varepsilon_t$ for $t = 3, ..., T$ using the funciton `ARp.resid()`.
 
 ```{r}
-#######################################
+# ------------------------------------
 # Find estimators for beta and epsilon
-#######################################
+# ------------------------------------
 p <- 2
 x <- data3A$x
 
@@ -23,16 +23,16 @@ epsilon_la <- ARp.resid(x, beta_la)
 ```
 
 
-Now we use the residual resampling bootstrap method to evaluate $\hat{\bm{\beta}}_{LS}$ and $\hat{\bm{\beta}}_{LA}$. We use $B = 2000$ bootstrap samples of the residuals and simulate new time series based on these. $x_1$ and $x_2$ is chosen as two random consecutive variables from the observed time series for each iteration. New predictors $\hat{\bm{\beta}}_{LS}^{(b)}$ and $\hat{\bm{\beta}}_{LA}^{(b)}$ are calculated for each $b = 1, ..., B$. A histogram of the sampled estimators can be found in figure \@ref(fig:boot-hist).
+Now we use the residual resampling bootstrap method to evaluate $\hat{\bm{\beta}}_{LS}$ and $\hat{\bm{\beta}}_{LA}$. We use $B = 8000$ bootstrap samples of the residuals and simulate new time series based on these. $x_1$ and $x_2$ is chosen as two random consecutive variables from the observed time series for each iteration. New predictors $\hat{\bm{\beta}}_{LS}^{(b)}$ and $\hat{\bm{\beta}}_{LA}^{(b)}$ are calculated for each $b = 1, ..., B$. A histogram of the sampled estimators can be found in figure \@ref(fig:boot-hist).
 
 
 
 (ref:fig-boot) Histograms displaying all samples of $\hat{\bm{\beta}}_{LS}^{(b)}$ and $\hat{\bm{\beta}}_{LA}^{(b)}$ from the residual resampling bootstrap method. $\hat{\beta}_1^{(b)}$ is displayed to the left for both loss functions, and $\hat{\beta}_2^{(b)}$ is displayed to the right. Estimators found using the LS loss function is displayed on the bottom and estimators found unsing the LA loss function is displayed on top.
 
 ```{r boot-hist, fig.cap = "(ref:fig-boot)"}
-########################################################
+# ------------------------------------------------------
 # Use bootstrapping to resample the parameter estimators
-########################################################
+# ------------------------------------------------------
 
 boot_iter <- 8000
 
@@ -69,9 +69,9 @@ We can see from figure \@ref(fig:boot-hist) that the variance in $\hat{\bm{\beta
 <!-- \end{equation} -->
 
 ```{r}
-###############################################################
+# ------------------------------------------------------------
 # Estimate standard deviation and bias for parameter estimators
-###############################################################
+# -------------------------------------------------------------
 
 sd_all <- data.frame(LA = c(sd(beta_mat_la[, 1]),
                             sd(beta_mat_la[, 2])),
@@ -91,14 +91,12 @@ format(bias_all, digits = 3)
 
 ```
 
-It seems that the LS estimator is not the optimal estimator for this non-Gaussian AR(2) process. This is due to the fact that the estimated variance is much smaller for the LA estimator. 
+It seems that the LS estimator is not the optimal estimator for this non-Gaussian AR(2) process. This is due to the fact that the estimated variance is much smaller for the LA estimator. The absolute value of the bias is also much smaller for the LA estimator. We cannot rely very much on the bias, though. The standard deviation is much larger than the bias for both estimators, making the uncertainty of the bias estimates too big. \todo[inline]{This might need some more discussion?}
 
-- bias is a lot smaller for LA! Good
-- variance is smaller than bias. But SD is larger. If SD matters, maybe bias does not matter so much
 
 \subsection{2.}
 
-\todo[inline]{write some text!!}
+We want to compute a $95 \%$ prediction interval for $x_{101}$. To do this we estimate $x_{101}^{(b)} = \hat{\beta}_1^{(b)} x_{100} + \hat{\beta}_2^{(b)} + \epsilon^{*(b)}$ for each bootstrap iteration. $\epsilon^{*(b)}$ is found by drawing uniformly from the original residual distribution used in problem $1.$. The prediction of $x_{101}$ is done in the function `bootstrapA()` shown earlier. Based on all samples of $x_{101}$ we make the prediction interval by removing the upper and lower quantiles of the $x_{101}$-values. The $2.5 \%$- and $97.5 \%$-quantiles from both estimators are shown below. 
 
 
 ```{r}
@@ -115,17 +113,17 @@ q_ls <- quantile(x_pred_ls, probs = c(alpha / 2, 1 - alpha / 2))
 q_la <- quantile(x_pred_la, probs = c(alpha / 2, 1 - alpha / 2))
 
 
+cat("Lower and upper quantiles for the LS estimator:\n")
 q_ls
+
+cat("Lower and upper quantiles for the LA estimator:\n")
 q_la
 
-# ls_conf <- c(-1, 1) * z * sd(x_pred_ls) + mean(x_pred_ls)
-# la_conf <- c(-1, 1) * z * sd(x_pred_la) + mean(x_pred_la)
-# 
-# ls_conf
-# la_conf
 
 
 
 ```
-- this is basicly the same. That is because the variance of the epsilons are so much larger than the variance of the estimators. Compare 
+
+The size of the prediction intervals is approximately the same, and it is centered around the same values. This means that for prediction purposes, both estimators works equally well. One might have believed that the prediction interval based on the LS estimator should have been much smaller than that of the LS estimator. However, we can find that the standard deviations of the residual samples is equal to `r format(sd(epsilon_ls), digits = 3)` and `r format(sd(epsilon_la), digits = 3)` for the LS and LA estimator respectively. This is significantly larger than the standard deviation of the two estimators, and it will be the dominant term, giving approximately the same standard deviation to both predictors for $x_{101}$.
+
 

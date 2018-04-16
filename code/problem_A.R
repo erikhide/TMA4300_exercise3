@@ -1,15 +1,8 @@
-
-# 
-# calcResiduals <- function(x, beta){
-#   t <- length(x)
-#   res <- x[-c(1, 2)] - 
-#     beta[1] * x[-c(1, t)] -
-#     beta[2] * x[-c(t - 1, t)]
-#   
-#   return(res)
-# }
-
-
+# --------------------------------------------------------
+# Uses residual resampling bootstrap to evaluate LS and LA
+# parameter estimators. Also returns predictions of x_101 
+# for each bootstrap iteration
+# --------------------------------------------------------
 bootstrapA <- function(x, beta, epsilon, boot_iter, type){
   
   if(type != "LS" && type != "LA"){
@@ -43,7 +36,9 @@ bootstrapA <- function(x, beta, epsilon, boot_iter, type){
   
 }
 
-
+# --------------------------------------------------
+# Displays histograms for two different data samples
+# --------------------------------------------------
 displayBeta <- function(samples, samples_2 = NULL, title = NULL, nbin = 50, names = NULL){
   
   if(!is.null(samples_2)){
@@ -55,9 +50,6 @@ displayBeta <- function(samples, samples_2 = NULL, title = NULL, nbin = 50, name
     data <- as_tibble(samples)
     data <- gather(data)
   }
-  
-  
-
   
   if(!is.null(samples_2)){
     gg_1 <- ggplot(data) + 
