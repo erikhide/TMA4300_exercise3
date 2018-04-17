@@ -113,11 +113,10 @@ q_ls <- quantile(x_pred_ls, probs = c(alpha / 2, 1 - alpha / 2))
 q_la <- quantile(x_pred_la, probs = c(alpha / 2, 1 - alpha / 2))
 
 
-cat("Lower and upper quantiles for the LS estimator:\n")
-q_ls
+cat("Lower and upper quantiles for the LS estimator:\n", q_ls)
 
-cat("Lower and upper quantiles for the LA estimator:\n")
-q_la
+cat("Lower and upper quantiles for the LA estimator:\n", q_la)
+
 
 
 
