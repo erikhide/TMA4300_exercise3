@@ -24,18 +24,15 @@ bootstrap <- function(z, u, lambda0_init, lambda1_init, iterations, numSamples) 
   bootstrapSample <- array(0, c(numSamples, n, 2))
   bootstrapVec <- c(1:200)
   
+  lambda0 <- vector("numeric")
+  lambda1 <- vector("numeric")
+  
   for (i in 1:numSamples) {
     temp <- sample(bootstrapVec, replace=TRUE)
     for (j in 1:n) {
       bootstrapSample[i,j,1] <- z[temp[j]]
       bootstrapSample[i,j,2] <- u[temp[j]]
     }
-  }
-  
-  lambda0 <- vector("numeric")
-  lambda1 <- vector("numeric")
-  
-  for (i in 1:numSamples) {
     temp <- EM(bootstrapSample[i,,1], bootstrapSample[i,,2], lambda0_init, lambda1_init, iterations)
     lambda0 <- c(lambda0, temp$lambda0[iterations+1])
     lambda1 <- c(lambda1, temp$lambda1[iterations+1])

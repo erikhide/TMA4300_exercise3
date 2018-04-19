@@ -59,4 +59,69 @@ and
 \hat{\lambda}_1 = n \left(\sum_{i=1}^{n} \left((1 - u_i) z_i + u_i \left(\frac{1}{\lambda_1^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_1^{(t)} z_i\right\}} - 1}\right)\right)\right)^{-1}.
 \end{equation}
 
-Starting out with some intial values $\lambda_0^{(0)}$ and $\lambda_1^{(0)}$, we are know able to implement an EM algorithm by iteratively calculating $\lambda_0^{(t+1)} = \hat{\lambda}_0$ and $\lambda_1^{(t+1)} = \hat{\lambda}_1$ using $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$, and then using these new values in the next iteration step. The initial values should be chosen among legal values -- that is, positive values -- but except from this restriction, the actual choice of initial values does not really matter.
+Starting out with some intial values $\lambda_0^{(0)}$ and $\lambda_1^{(0)}$, we are know able to implement an EM algorithm by iteratively calculating $\lambda_0^{(t+1)} = \hat{\lambda}_0$ and $\lambda_1^{(t+1)} = \hat{\lambda}_1$ using $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$, and then using these new values in the next iteration step. The initial values should be chosen among legal values -- that is, positive values -- but except from this restriction, the actual choice of initial values does not really matter. The function `EM()` below returns a `data.frame` object with all the $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ for $t = 0,...,t_{max}$, with $t_{max}$ the number of iterations.
+
+```{r}
+EM <- function(z, u, lambda0_init, lambda1_init, iterations) {
+  lambda0 <- vector("numeric")
+  lambda1 <- vector("numeric")
+  n <- length(z)
+  
+  lambda0 <- c(lambda0, lambda0_init)
+  lambda1 <- c(lambda1, lambda1_init)
+  
+  for (i in 1:iterations) {
+    lambda0 <- c(lambda0, n * (1 / sum(u*z + (1 - u) * (1/lambda0[i] - z/(exp(lambda0[i] * z) - 1)))))
+    lambda1 <- c(lambda1, n * (1 / sum((1 - u) * z + u * (1/lambda1[i] - z/(exp(lambda1[i] * z) - 1)))))
+  }
+  
+  return(data.frame(lambda0, lambda1))
+}
+```
+
+```{r}
+z <- as.matrix(read.table("../files/z.txt", header=FALSE))
+u <- as.matrix(read.table("../files/u.txt", header=FALSE))
+lambda0_init <- 5
+lambda1_init <- 5
+iterations <- 20
+em_estimate <- EM(z, u, lambda0_init, lambda1_init, iterations)
+```
+
+Running the code above with $\lambda_0^{(0)} = \lambda_1^{(0)} = 5$, 20 iterations, and `z` and `u` from the provided files `z.txt` and `u.txt`, the estimates of $\hat{\lambda}_0$ and $\hat{\lambda}_1$ becomes `r sprintf("%.3f", em_estimate$lambda0[iterations+1])` and `r sprintf("%.3f", em_estimate$lambda1[iterations+1])` respectively. Figure \@ref(fig:emEstimate) shows that convergence happens almost instantly, and that about 10 iterations are in fact sufficient.
+
+(ref:emEstimate) Plots showing the convergence of $\hat{\lambda}_0$ and $\hat{\lambda}_1$ with number of iterations on the x-axis and the values of the variables on the y-axis.
+
+```{r emEstimate, fig.cap = "(ref:emEstimate)"}
+gg1 <- ggplot(em_estimate, aes(x = seq(0,iterations,1), y = lambda0)) +
+  geom_line(color="red") +
+  geom_point() +
+  xlab("Number of iterations") +
+  ylab(bquote(lambda[0]))
+
+gg2 <- ggplot(em_estimate, aes(x = seq(0,iterations,1), y = lambda1)) +
+  geom_line(color="red") +
+  geom_point() +
+  xlab("Number of iterations") +
+  ylab(bquote(lambda[1]))
+
+grid.arrange(gg1,gg2,ncol=2)
+```
+
+
+\subsection{3.}
+
+Pseudo-code for the bootstrapping is given below:
+
+`Import` $z$ `and` $u$ `from z.txt and u.txt`$\\$
+$n$ `<- length(z)`$\\$
+`lambda0 <- []`$\\$
+`lambda1 <- []`$\\$
+
+`for b in 1 to B:`$\\$
+  $\hspace*{10mm}$`Generate a bootstrap sample by sampling` $n$ `pairs` $(z_i,u_i)$ `with replacement from` $z$ `and` $u\\$
+  $\hspace*{10mm}$`Run the EM function for this sample`$\\$
+  $\hspace*{10mm}$`Append the converged (final) values to lambda0 and lambda1`$\\$
+`end for`
+
+$\hat{\sigma}_{\hat{\lambda}_0}$ `<-` $\sqrt{\frac{1}{B-1} \sum_{b=1}^{B} (\hat{\lambda}_0^{(b)} - \bar{\hat{\lambda}}_0)}\\$
