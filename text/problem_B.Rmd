@@ -6,9 +6,9 @@ We download the data file `bilirubin.txt` and display the logarithms of the conc
 
 ```{r}
 
-# ------------
+# ############
 # Prepare data
-# ------------
+# ############
 
 
 bilirubin <- read.table("../files/bilirubin.txt", header = TRUE) %>% as_tibble()
@@ -19,9 +19,9 @@ bilirubin <- read.table("../files/bilirubin.txt", header = TRUE) %>% as_tibble()
 
 ```{r boxplot, fig.cap = "(ref:boxplot)"}
 
-# --------------
+# ##############
 # Create boxplot
-# --------------
+# ##############
 
 ggplot(data = bilirubin) +
   geom_boxplot(aes(x = pers, y = log(meas), fill = pers)) +
@@ -43,9 +43,9 @@ We fit the logarithms of concentrations as a linear model using the function `lm
 To test the hypothesis $H_0:\ \beta_1 = \beta_2 = \beta_3$ versus $H_1:$ "at leat one of the $\beta$'s are different", we compute the F-statistic of the linear model.
 
 ```{r}
-# ----------------------------------------
+# ########################################
 # Fit linear model and compute F-statistic
-# ----------------------------------------
+# ########################################
 
 
 lm <- lm(log(meas) ~ pers, data = bilirubin)
@@ -72,9 +72,9 @@ We perform a permutation test using the function `permTest()` with $n = 999$. A 
 (ref:permtest) Histogram displaying the computed F-statistic for all 999 premutations of the bilirubin data. The F-statistic for the original data is displayed with a vertical line.
 
 ```{r permtest, fig.cap = "(ref:permtest)"}
-# -------------------------------------------
+# ###########################################
 # Do a permutation test of the bilirubin data
-# -------------------------------------------
+# ###########################################
 
 n <- 999
 

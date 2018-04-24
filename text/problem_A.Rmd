@@ -5,9 +5,9 @@
 First, we find the estimators $\hat{\bm{\beta}}_{LS}$ and $\hat{\bm{\beta}}_{LA}$ using the function `ARp.beta.est()`. Then, we calculate $\varepsilon_t$ for $t = 3, ..., T$ using the funciton `ARp.resid()`.
 
 ```{r}
-# ------------------------------------
+# ####################################
 # Find estimators for beta and epsilon
-# ------------------------------------
+# ####################################
 p <- 2
 x <- data3A$x
 
@@ -25,14 +25,17 @@ epsilon_la <- ARp.resid(x, beta_la)
 
 Now we use the residual resampling bootstrap method to evaluate $\hat{\bm{\beta}}_{LS}$ and $\hat{\bm{\beta}}_{LA}$. We use $B = 8000$ bootstrap samples of the residuals and simulate new time series based on these. $x_1$ and $x_2$ is chosen as two random consecutive variables from the observed time series for each iteration. New predictors $\hat{\bm{\beta}}_{LS}^{(b)}$ and $\hat{\bm{\beta}}_{LA}^{(b)}$ are calculated for each $b = 1, ..., B$. A histogram of the sampled estimators can be found in figure \@ref(fig:boot-hist).
 
+```{r bootstrap}
+```
+
 
 
 (ref:fig-boot) Histograms displaying all samples of $\hat{\bm{\beta}}_{LS}^{(b)}$ and $\hat{\bm{\beta}}_{LA}^{(b)}$ from the residual resampling bootstrap method. $\hat{\beta}_1^{(b)}$ is displayed to the left for both loss functions, and $\hat{\beta}_2^{(b)}$ is displayed to the right. Estimators found using the LS loss function is displayed on the bottom and estimators found unsing the LA loss function is displayed on top.
 
 ```{r boot-hist, fig.cap = "(ref:fig-boot)"}
-# ------------------------------------------------------
+# ######################################################
 # Use bootstrapping to resample the parameter estimators
-# ------------------------------------------------------
+# ######################################################
 
 boot_iter <- 8000
 
@@ -69,9 +72,9 @@ We can see from figure \@ref(fig:boot-hist) that the variance in $\hat{\bm{\beta
 <!-- \end{equation} -->
 
 ```{r}
-# ------------------------------------------------------------
+# #############################################################
 # Estimate standard deviation and bias for parameter estimators
-# -------------------------------------------------------------
+# #############################################################
 
 sd_all <- data.frame(LA = c(sd(beta_mat_la[, 1]),
                             sd(beta_mat_la[, 2])),
@@ -100,9 +103,9 @@ We want to compute a $95 \%$ prediction interval for $x_{101}$. To do this we es
 
 
 ```{r}
-# ---------------------------------------
+# ######################################
 # Compute prediction intervals for x_101
-# ----------------------------------------
+# ######################################
 
 x_pred_ls <- boot_ls$x_pred
 x_pred_la <- boot_la$x_pred
