@@ -49,30 +49,3 @@ bootstrap <- function(z, u, lambda0_init, lambda1_init, iterations, numSamples) 
   
   return(data.frame(se_lambda0, se_lambda1, bias_lambda0, bias_lambda1, corr))
 }
-
-calculateLikelihood <- function(lambda) {
-  
-  z <- as.matrix(read.table("files/z.txt", header=FALSE))
-  u <- as.matrix(read.table("files/u.txt", header=FALSE))
-  
-  likelihood <- 0
-  n <- length(z)
-  
-  for (i in 1:n) {
-    likelihood <- likelihood + 2*u[i]*log(lambda[1]) + 2*(1-u[i])*log(lambda[2]) + log(lambda[1]+lambda[2]) - lambda[1]*z[i]*u[i] + u[i]*log(1-exp(-lambda[2]*z[i])) - lambda[2]*z[i]*(1-u[i]) + (1-u[i])*log(1-exp(-lambda[1]*z[i])) - log(2) - log(lambda[1]) - log(lambda[2])
-  }
-
-  return(likelihood)
-}
-
-library(optimization)
-opt <- optim_nm(fun=calculateLikelihood, k=2, start=c(3.4657,9.3532), maximum=TRUE)
-
-x <- seq(3,4,0.01)
-y <- seq(9,10,0.01)
-res <- c()
-for (i in 1:length(x)) {
-  res <- c(res, calculateLikelihood(c(x[i], y[i])))
-}
-plot(x, res)
-plot(y, res)

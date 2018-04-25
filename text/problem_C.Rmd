@@ -1,4 +1,4 @@
-\section{Problem C: The EM-algorithm and bootstrapping}
+\section{Problem C: The EM algorithm and bootstrapping}
 
 \subsection{1.}
 
@@ -50,16 +50,16 @@ which is precisely what we were asked to show.
 We want to find the values of $\lambda_0$ and $\lambda_1$ for which the result from 1 is maximised. By differentiating the expression with respect to $\lambda_0$ and setting it equal to 0, and then doing the same for $\lambda_1$, we get
 
 \begin{equation}
-\hat{\lambda}_0 = n \left(\sum_{i=1}^{n} \left(u_i z_i + (1 - u_i) \left(\frac{1}{\lambda_0^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_0^{(t)} z_i\right\}} - 1}\right)\right)\right)^{-1}
+\widehat{\lambda}_0 = n \left(\sum_{i=1}^{n} \left(u_i z_i + (1 - u_i) \left(\frac{1}{\lambda_0^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_0^{(t)} z_i\right\}} - 1}\right)\right)\right)^{-1}
 \end{equation}
 
 and
 
 \begin{equation}
-\hat{\lambda}_1 = n \left(\sum_{i=1}^{n} \left((1 - u_i) z_i + u_i \left(\frac{1}{\lambda_1^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_1^{(t)} z_i\right\}} - 1}\right)\right)\right)^{-1}.
+\widehat{\lambda}_1 = n \left(\sum_{i=1}^{n} \left((1 - u_i) z_i + u_i \left(\frac{1}{\lambda_1^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_1^{(t)} z_i\right\}} - 1}\right)\right)\right)^{-1}.
 \end{equation}
 
-Starting out with some intial values $\lambda_0^{(0)}$ and $\lambda_1^{(0)}$, we are know able to implement an EM algorithm by iteratively calculating $\lambda_0^{(t+1)} = \hat{\lambda}_0$ and $\lambda_1^{(t+1)} = \hat{\lambda}_1$ using $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$, and then using these new values in the next iteration step. The initial values should be chosen among legal values -- that is, positive values -- but except from this restriction, the actual choice of initial values does not really matter. The function `EM()` below returns a `data.frame` object with all the $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ for $t = 0,...,t_{max}$, with $t_{max}$ the number of iterations.
+Starting out with some intial values $\lambda_0^{(0)}$ and $\lambda_1^{(0)}$, we are know able to implement an EM algorithm by iteratively calculating $\lambda_0^{(t+1)} = \widehat{\lambda}_0$ and $\lambda_1^{(t+1)} = \widehat{\lambda}_1$ using $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$, and then using these new values in the next iteration step. The initial values should be chosen among legal values -- that is, positive values -- but except from this restriction, the actual choice of initial values does not really matter for this specific problem, as the convergence properties are exceptionally good. However, EM algorithms in general tend to be quite slow, and hence good (i.e. more correct) starting values should be preferred in order to reduce the time until convergence. One possible way to get good initial values in this problem might be to calculate the mean of the $z$ values for which $u$ equals 1 and use the inverse of that as $\lambda_0^{(0)}$ -- the inverse of the mean of the remaining $z$ values should then become our $\lambda_1^{(0)}$. The function `EM()` below returns a `data.frame` object with all the $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ for $t = 0,...,t_{max}$, with $t_{max}$ the number of iterations.
 
 ```{r}
 EM <- function(z, u, lambda0_init, lambda1_init, iterations) {
@@ -88,9 +88,9 @@ iterations <- 20
 em_estimate <- EM(z, u, lambda0_init, lambda1_init, iterations)
 ```
 
-Running the code above with $\lambda_0^{(0)} = \lambda_1^{(0)} = 5$, 20 iterations, and `z` and `u` from the provided files `z.txt` and `u.txt`, the estimates of $\hat{\lambda}_0$ and $\hat{\lambda}_1$ becomes `r sprintf("%.3f", em_estimate$lambda0[iterations+1])` and `r sprintf("%.3f", em_estimate$lambda1[iterations+1])` respectively. Figure \@ref(fig:emEstimate) shows that convergence happens almost instantly, and that about 10 iterations are in fact sufficient.
+Running the code above with $\lambda_0^{(0)} = \lambda_1^{(0)} = 5$, 20 iterations, and $z$ and $u$ from the provided files `z.txt` and `u.txt`, the estimates of $\widehat{\lambda}_0$ and $\widehat{\lambda}_1$ becomes `r sprintf("%.3f", em_estimate$lambda0[iterations+1])` and `r sprintf("%.3f", em_estimate$lambda1[iterations+1])` respectively. Figure \@ref(fig:emEstimate) shows that convergence happens almost instantly, and that about 10 iterations are in fact sufficient.
 
-(ref:emEstimate) Plots showing the convergence of $\hat{\lambda}_0$ and $\hat{\lambda}_1$ with number of iterations on the x-axis and the values of the variables on the y-axis.
+(ref:emEstimate) Plots showing the convergence of $\widehat{\lambda}_0$ and $\widehat{\lambda}_1$ with number of iterations on the x-axis and the values of the variables on the y-axis.
 
 ```{r emEstimate, fig.cap = "(ref:emEstimate)"}
 gg1 <- ggplot(em_estimate, aes(x = seq(0,iterations,1), y = lambda0)) +
@@ -120,17 +120,23 @@ $n$ `<- length(z)`$\\$
 
 `for b in 1 to B:`$\\$
   $\hspace*{10mm}$`Generate a bootstrap sample by sampling` $n$ `pairs` $(z_i,u_i)$ `with replacement from` $z$ `and` $u\\$
-  $\hspace*{10mm}$`Run the EM function for this sample`$\\$
+  $\hspace*{10mm}$`Run the EM function for this sample, with a sufficient number of iterations`$\\$
   $\hspace*{10mm}$`Append the converged (final) values to lambda0 and lambda1`$\\$
-`end for`
+`end for`$\\$
 
-`Denote by` $\hat{\lambda}_0^{(b)}$ `element number b in lambda0`$\\$
-`Denote by` $\bar{\lambda}_0^{(B)}$ `the mean of the elements in lambda0`$\\$
-`Do the exact same for lambda1`$\\$
+`Denote by` $\widehat{\lambda}_0^{*(b)}$ `and` $\widehat{\lambda}_1^{*(b)}$ `element number b in lambda0 and lambda1`$\\$
+`Denote by` $\widehat{\lambda}_0^{*(\cdot)}$ `and` $\widehat{\lambda}_1^{*(\cdot)}$ `the mean of the elements in lambda0 and lambda1`$\\$
 
-$\hat{\sigma}_{\hat{\lambda}_0}$ `<-` $\sqrt{\frac{1}{B-1} \sum_{b=1}^{B} (\hat{\lambda}_0^{(b)} - \bar{\lambda}_0^{(B)})}\\$
-$\hat{\sigma}_{\hat{\lambda}_1}$ `<-` $\sqrt{\frac{1}{B-1} \sum_{b=1}^{B} (\hat{\lambda}_1^{(b)} - \bar{\lambda}_1^{(B)})}\\$
-$\text{Bias}(\lambda_0^{*})$
+$\widehat{\text{se}}\left(\widehat{\lambda}_0\right)$ `<-` $\sqrt{\frac{1}{B-1} \sum_{b=1}^{B} \left(\widehat{\lambda}_0^{*(b)} - \widehat{\lambda}_0^{*(\cdot)}\right)}\\$
+$\vspace{4mm}$
+$\widehat{\text{se}}\left(\widehat{\lambda}_1\right)$ `<-` $\sqrt{\frac{1}{B-1} \sum_{b=1}^{B} \left(\widehat{\lambda}_1^{*(b)} - \widehat{\lambda}_1^{*(\cdot)}\right)}\\$
+$\vspace{4mm}$
+$\widehat{\text{bias}}\left(\widehat{\lambda_0}\right)$ `<-` $\frac{1}{B} \sum_{b=1}^{B} \widehat{\lambda}_0^{*(b)} - \widehat{\lambda}_0\\$
+$\vspace{4mm}$
+$\widehat{\text{bias}}\left(\widehat{\lambda_1}\right)$ `<-` $\frac{1}{B} \sum_{b=1}^{B} \widehat{\lambda}_1^{*(b)} - \widehat{\lambda}_1\\$
+$\vspace{4mm}$
+$\widehat{\text{corr}}\left(\widehat{\lambda}_0, \widehat{\lambda}_1\right)$ `<-` $\frac{\frac{1}{B-1} \sum_{b=1}^{B} \left(\widehat{\lambda}_0^{*(b)} - \widehat{\lambda}_0^{*(\cdot)}\right) \left(\widehat{\lambda}_1^{*(b)} - \widehat{\lambda}_1^{*(\cdot)}\right)}{\widehat{\text{se}}\left(\widehat{\lambda}_0\right) \cdot  \widehat{\text{se}}\left(\widehat{\lambda}_1\right)}\\$
+
 
 ```{r}
 bootstrap <- function(z, u, lambda0_init, lambda1_init, iterations, numSamples) {
@@ -167,6 +173,6 @@ bootstrap <- function(z, u, lambda0_init, lambda1_init, iterations, numSamples) 
 bootstrapRun <- bootstrap(z, u, 5, 5, 20, 1000)
 ```
 
-The function `bootstrap()` is an implementation of this pseudocode. Running the function with intial value of 5 for $\lambda_0^{(0)}$ and $\lambda_1^{(0)}$, 20 iterations of the EM algorithm per bootstrap sample, and 1000 bootstrap samples in total, gives $\hat{\sigma}_0 = `r sprintf("%.3f", bootstrapRun$se_lambda0)`$, $\hat{\sigma}_1 = `r sprintf("%.3f", bootstrapRun$se_lambda1)`$, $\hat{\text{Bias}}(\lambda_0) = `r sprintf("%.3f", bootstrapRun$bias_lambda0)`$, $\hat{\text{Bias}}(\lambda_1) = `r sprintf("%.3f", bootstrapRun$bias_lambda1)`$, and $\hat{\text{corr}}(\lambda_0, \lambda_1) = `r sprintf("%.3f", bootstrapRun$corr)`$.
+The function `bootstrap()` is an implementation of this pseudocode. Running the function with intial value of 5 for $\lambda_0^{(0)}$ and $\lambda_1^{(0)}$, 20 iterations of the EM algorithm per bootstrap sample, and 1000 bootstrap samples in total, gives $\widehat{\text{se}}\left(\widehat{\lambda}_0\right) = `r sprintf("%.3f", bootstrapRun$se_lambda0)`$, $\widehat{\text{se}}\left(\widehat{\lambda}_1\right) = `r sprintf("%.3f", bootstrapRun$se_lambda1)`$, $\widehat{\text{bias}}\left(\widehat{\lambda}_0\right) = `r sprintf("%.3f", bootstrapRun$bias_lambda0)`$, $\widehat{\text{bias}}\left(\widehat{\lambda}_1\right) = `r sprintf("%.3f", bootstrapRun$bias_lambda1)`$, and $\widehat{\text{corr}}\left(\widehat{\lambda}_0, \widehat{\lambda}_1\right) = `r sprintf("%.3f", bootstrapRun$corr)`$.
 
-When deciding whether or not to subtract the bias from the estimator when using boostrapping, one has to consider the trade-off between getting a less biased estimator and having as little variance as possible. In this case, the biases are quite small compared to the estimated values of $\lambda_0$ and $\lambda_1$. Hence, it seems reasonable to prefer the maximum likelihood estimates over the bias corrected estimates.
+When deciding whether or not to subtract the bias from the estimator when using boostrapping, one has to consider the trade-off between getting a less biased estimator and having as little variance as possible. In this case, the biases are quite small compared to the estimated values of $\lambda_0$ and $\lambda_1$, and due to this there is a possibility that bias correction only results in the addition of noise. Indeed, the biases presented above are only estimates of the real biases, and therefore bias correction is not likely to result in a completely unbiased estimator. Hence, it seems reasonable to prefer the maximum likelihood estimates over the bias corrected estimates.
