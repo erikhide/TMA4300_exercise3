@@ -34,8 +34,8 @@ calculateLikelihood <- function(lambda) {
 
 # Generate new (larger) set to test new solution vs. EM algorithm:
 
-lambda1_real <- 2
-lambda2_real <- 15
+lambda1_real <- 3
+lambda2_real <- 4
 n <- 10000
 
 x_gen <- rexp(n, lambda1_real)
@@ -46,5 +46,5 @@ write.table(z_gen, "files/z_gen.txt", row.names=FALSE, col.names=FALSE)
 write.table(u_gen, "files/u_gen.txt", row.names=FALSE, col.names=FALSE)
 
 em_gen <- EM(z_gen, u_gen, 5, 5, 20)
-opt_gen <- optim_nm(fun=calculateLikelihood, k=2, start=c(3,9), maximum=TRUE)
+opt_gen <- optim_nm(fun=calculateLikelihood, start=c(2.9,3.9), maximum=TRUE)
 

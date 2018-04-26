@@ -118,6 +118,8 @@ $n$ `<- length(z)`$\\$
 `lambda0 <- []`$\\$
 `lambda1 <- []`$\\$
 
+`Let` $\widehat{\lambda}_0$ `and` $\widehat{\lambda}_1$ `be the results of running the EM algorithm for the original` $z$ `and` $u$ `(i.e. the converged values)`$\\$
+
 `for b in 1 to B:`$\\$
   $\hspace*{10mm}$`Generate a bootstrap sample by sampling` $n$ `pairs` $(z_i,u_i)$ `with replacement from` $z$ `and` $u\\$
   $\hspace*{10mm}$`Run the EM function for this sample, with a sufficient number of iterations`$\\$
