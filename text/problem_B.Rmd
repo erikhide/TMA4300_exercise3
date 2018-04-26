@@ -30,7 +30,7 @@ ggplot(data = bilirubin) +
 
 ```
 
-From the box plot we can see that the concentrations of bilirubin is quite higher for person 3 than that of persons 1 and 2. The variance in the values of person 2 is also a lot smaller than that of the other two persons. \todo[inline]{Don't know how much I should say here...}
+From the box plot we can see that the concentrations of bilirubin is quite a lot higher for person 3 than for persons 1 and 2. The variance in the values of person 2 is also a lot smaller than that of the other two persons. \todo[inline]{Don't know how much I should say here...}
 
 We fit the logarithms of concentrations as a linear model using the function `lm()` in `R`. The linear model becomes
 
@@ -55,7 +55,7 @@ fval <- f[1]
 
 ```
 
-The F-statistic has a value of `r format(fval, digits = 3)` on 2 and 26 degrees of freedom, giving a p-value of `r format(pf(f[1], f[2], f[3], lower.tail = FALSE), digits = 3)`. At a $0.05$ significance level we reject $H_0$, meaning that the concentration of bilrubin is different for each person.
+The F-statistic has a value of `r format(fval, digits = 3)` on 2 and 26 degrees of freedom, giving a p-value of `r format(pf(f[1], f[2], f[3], lower.tail = FALSE), digits = 3)`. At a $0.05$ significance level we reject $H_0$, meaning that the concentration of bilirubin is not identical for each person.
 
 \subsection{2.}
 
