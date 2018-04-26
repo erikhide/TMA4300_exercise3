@@ -11,17 +11,17 @@ f(x, y | \lambda_0, \lambda_1) = \prod_{i=1}^{n} \lambda_0 e^{-\lambda_0 x_i} \p
 Taking the natural logarithm we arrive at the log-likelihood function
 
 \begin{equation}
-\ln \left[f(x, y | \lambda_0, \lambda_1)\right] = n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i.
+\ln \left[f(x, y\; \middle | \;\lambda_0, \lambda_1)\right] = n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i.
 \end{equation}
 
 The expected value of this log-likelihood function given $z = (z_1,...,z_n)$ and $u = (u_1,...,u_n)$, where $z_i = \max{\{x_i, y_i\}}$ and $u_i = I(x_i \geqslant y_i)$ for $i = 1,...,n$, can be written as
 
 \begin{align*}
-&E\left[n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}\right]\\
+&E\left[n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i \; \middle | \; z, u, \lambda_0^{(t)}, \lambda_1^{(t)}\right]\\
 &= n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} E[x_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}] - \lambda_1 \sum_{i=1}^{n} E[y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}],
 \end{align*}
 
-since $n$, $\lambda_0$ and $\lambda_1$ are constants. Now all we have to do is find the expected value of $x_i$ and $y_i$ when $z_i$, $u_i$, $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ are known. There are two cases to consider: _i)_ $x_i \geqslant y_i$ implying that $z_i = x_i$ and $u_i = 1$, and _ii)_ $x_i < y_i$ implying that $z_i = y_i$ and $u_i = 0$. Assuming case _i)_, we simply get $E[x_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}] = z_i$, leaving us with the task of finding the expected value of $y_i$. The probability density function of $y_i$ becomes
+since $n$, $\lambda_0$ and $\lambda_1$ are constants. Now all we have to do is find the expected value of $x_i$ and $y_i$ when $z_i$, $u_i$, $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ are known. There are two cases to consider: I) $x_i \geqslant y_i$ implying that $z_i = x_i$ and $u_i = 1$, and II) $x_i < y_i$ implying that $z_i = y_i$ and $u_i = 0$. Assuming case I), we get $E[x_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}] = z_i$, leaving us with the task of finding the expected value of $y_i$. The probability density function of $y_i$ becomes
 
 \begin{equation}
 f(y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}) = f(y_i | x_i, x_i \geqslant y_i, \lambda_1^{(t)}) = \frac{\lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}}}{\int_{0}^{x_i} \lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}} dy_i} = \frac{\lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}}}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}},
@@ -29,19 +29,20 @@ f(y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}) = f(y_i | x_i, x_i \geqslant y_i
 
 with $y_i \in {[0,x_i]}$. The expected value is thus
 
-\begin{align*}
+\begin{align}
 \int_{0}^{x_i} y_i \frac{\lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}}}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}} dy_i &= \frac{1}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}} \int_{0}^{x_i} y_i \lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}} dy_i\\
 &= \frac{1}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}} \left(\frac{1}{\lambda_1^{(t)}} - \frac{x_i + \frac{1}{\lambda_1^{(t)}}}{\exp{\{\lambda_1^{(t)} x_i\}}}\right)\\
 &= \frac{\frac{\exp{\left\{\lambda_1^{(t)} x_i\right\}}}{\lambda_1^{(t)}} - x_i - \frac{1}{\lambda_1^{(t)}}}{\exp{\left\{\lambda_1^{(t)} x_i\right\}} - 1} = \frac{1}{\lambda_1^{(t)}} - \frac{x_i}{\exp{\left\{\lambda_1^{(t)} x_i\right\}} - 1}.
-\end{align*}
+\end{align}
 
-Using $u_i$ as an indicator, and realising that for case _ii)_ the result is in some sense symmetric, the expected value of the log-likelihood function given $z$, $u$, $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ becomes
+Using the same procedure for case II), a similar expression can be found. Now, using the results from both cases and $u_i$ as an indicator, the expected value of the log-likelihood function given $z$, $u$, $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ becomes
 
-\begin{align*}
-E\left[n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}\right] &= n (\ln(\lambda_0) + \ln(\lambda_1))\\
+
+\begin{align}
+E\left[n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i\; \middle | \;z, u, \lambda_0^{(t)}, \lambda_1^{(t)}\right] &= n (\ln(\lambda_0) + \ln(\lambda_1))\\
 &- \lambda_0 \sum_{i=1}^{n} \left[u_i z_i + (1 - u_i) \left(\frac{1}{\lambda_0^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_0^{(t)} z_i\right\}} - 1}\right)\right]\\
 &- \lambda_1 \sum_{i=1}^{n} \left[(1 - u_i) z_i + u_i \left(\frac{1}{\lambda_1^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_1^{(t)} z_i\right\}} - 1}\right)\right],
-\end{align*}
+\end{align}
 
 which is precisely what we were asked to show.
 
