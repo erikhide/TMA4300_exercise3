@@ -94,7 +94,7 @@ format(bias_all, digits = 3)
 
 ```
 
-It seems that the LS estimator is not the optimal estimator for this non-Gaussian AR(2) process. This is due to the fact that the estimated variance is much smaller for the LA estimator. The absolute value of the bias is also much smaller for the LA estimator. However, we cannot rely very much on the bias; the standard deviation is much larger than the bias for both estimators, making the uncertainty of the bias estimates too big. \todo[inline]{This might need some more discussion?}
+It seems that the LS estimator is not the optimal estimator for this non-Gaussian AR(2) process. The bias of the LA estimator is much smaller than that of the LS estimator, and we would prefer the bias to be as small as possible. However, since the estimated standard deviation is much larger than the absolute value of the bias, the bias cannot really tell us much about the difference in performance between the two estimators. When looking at the estimated standard deviations, we see that the LA estimator gives much smaller values than the LS estimator. Due to this, we conclude that the LA estimator should be preferred for this problem.
 
 
 \subsection{2.}

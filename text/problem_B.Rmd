@@ -2,7 +2,7 @@
 
 \subsection{1.}
 
-We download the data file `bilirubin.txt` and display the logarithms of the concentrations in a boxplot. This can be seen in figure \@ref(fig:boxplot).
+We download the data file `bilirubin.txt` and display the logarithms of the concentrations in a box plot. This can be seen in figure \@ref(fig:boxplot).
 
 ```{r}
 
@@ -15,12 +15,12 @@ bilirubin <- read.table("../files/bilirubin.txt", header = TRUE) %>% as_tibble()
 
 ```
 
-(ref:boxplot) Boxplot of the logarithms of the concentrations of bilirubin (mg/dL) in blood samples from three young men, denoted p1, p2 and p3.
+(ref:boxplot) Box plot of the logarithms of the concentrations of bilirubin (mg/dL) in blood samples from three young men, denoted p1, p2 and p3.
 
 ```{r boxplot, fig.cap = "(ref:boxplot)"}
 
 # ##############
-# Create boxplot
+# Create box plot
 # ##############
 
 ggplot(data = bilirubin) +

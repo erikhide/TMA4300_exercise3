@@ -115,7 +115,7 @@ gg2 <- ggplot(em_estimate, aes(x = seq(0,iterations,1), y = lambda1)) +
   xlab("Number of iterations") +
   ylab(bquote(lambda[1]))
 
-grid.arrange(gg1,gg2,ncol=2)
+ggarrange(gg1,gg2,ncol=2)
 ```
 
 
@@ -124,9 +124,9 @@ grid.arrange(gg1,gg2,ncol=2)
 Pseudo-code for the bootstrapping is given below:
 
 `Import` $z$ `and` $u$ `from z.txt and u.txt`$\\$
-$n$ `<- length(z)`$\\$
-`lambda0 <- []`$\\$
-`lambda1 <- []`$\\$
+$n$ `<- Length of z`$\\$
+`lambda0 <- Empty list`$\\$
+`lambda1 <- Empty list`$\\$
 
 `Let` $\widehat{\lambda}_0$ `and` $\widehat{\lambda}_1$ `be the results of running the EM algorithm for the original` $z$ `and` $u$ `(i.e. the converged values)`$\\$
 
