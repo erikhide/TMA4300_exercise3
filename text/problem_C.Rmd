@@ -14,7 +14,7 @@ Taking the natural logarithm we arrive at the log-likelihood function
 \ln \left[f(x, y | \lambda_0, \lambda_1)\right] = n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i.
 \end{equation}
 
-The expected value of this log-likelihood function given $z = (z_1,...,z_n)$ and $u = (u_1,...,u_n)$, where $z_i = \max{\{x_i, y_i\}}$ and $u_i = I(x_i \geqslant y_i)$ for $i = 1,...,n$, can be written as
+The expected value of this log-likelihood function given $z = (z_1,...,z_n)$ and $u = (u_1,...,u_n)$, where $z_i = \max{\{x_i, y_i\}}$ and $u_i = I(x_i \geqslant y_i)$ for $i = 1,...,n$, as well as $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ some initial guess for $\lambda_0$ and $\lambda_1$, can be written as
 
 \begin{align*}
 &E\left[n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}\right]\\
@@ -62,6 +62,9 @@ and
 Starting out with some intial values $\lambda_0^{(0)}$ and $\lambda_1^{(0)}$, we are know able to implement an EM algorithm by iteratively calculating $\lambda_0^{(t+1)} = \widehat{\lambda}_0$ and $\lambda_1^{(t+1)} = \widehat{\lambda}_1$ using $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$, and then using these new values in the next iteration step. The initial values should be chosen among legal values -- that is, positive values -- but except from this restriction, the actual choice of initial values does not really matter for this specific problem, as the convergence properties are exceptionally good. However, EM algorithms in general tend to be quite slow, and hence good (i.e. more correct) starting values should be preferred in order to reduce the time until convergence. One possible way to get good initial values in this problem might be to calculate the mean of the $z$ values for which $u$ equals 1 and use the inverse of that as $\lambda_0^{(0)}$ -- the inverse of the mean of the remaining $z$ values should then become our $\lambda_1^{(0)}$. The function `EM()` below returns a `data.frame` object with all the $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ for $t = 0,...,t_{max}$, with $t_{max}$ the number of iterations.
 
 ```{r}
+# ##############################
+# Implementation of EM algorithm
+# ##############################
 EM <- function(z, u, lambda0_init, lambda1_init, iterations) {
   lambda0 <- vector("numeric")
   lambda1 <- vector("numeric")
@@ -80,6 +83,10 @@ EM <- function(z, u, lambda0_init, lambda1_init, iterations) {
 ```
 
 ```{r}
+# #############################
+# Running EM algorithm for data
+# from z.txt and u.txt
+# #############################
 z <- as.matrix(read.table("../files/z.txt", header=FALSE))
 u <- as.matrix(read.table("../files/u.txt", header=FALSE))
 lambda0_init <- 5
@@ -93,6 +100,9 @@ Running the code above with $\lambda_0^{(0)} = \lambda_1^{(0)} = 5$, 20 iteratio
 (ref:emEstimate) Plots showing the convergence of $\widehat{\lambda}_0$ and $\widehat{\lambda}_1$ with number of iterations on the x-axis and the values of the variables on the y-axis.
 
 ```{r emEstimate, fig.cap = "(ref:emEstimate)"}
+# ###################################
+# Plotting iterations of EM algorithm
+# ###################################
 gg1 <- ggplot(em_estimate, aes(x = seq(0,iterations,1), y = lambda0)) +
   geom_line(color="red") +
   geom_point() +
@@ -141,6 +151,11 @@ $\widehat{\text{corr}}\left(\widehat{\lambda}_0, \widehat{\lambda}_1\right)$ `<-
 
 
 ```{r}
+# ############################################
+# Function estimating standard deviation, bias
+# and correlation for the parameters lambda_0
+# and lambda_1 by use of bootstrapping
+# ############################################
 bootstrap <- function(z, u, lambda0_init, lambda1_init, iterations, numSamples) {
   n <- length(z)
   bootstrapSample <- array(0, c(numSamples, n, 2))
