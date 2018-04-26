@@ -29,38 +29,42 @@ f(y_i | z, u, \lambda_0^{(t)}, \lambda_1^{(t)}) = f(y_i | x_i, x_i \geqslant y_i
 
 with $y_i \in {[0,x_i]}$. The expected value is thus
 
-\begin{align}
+\begin{equation}
+\begin{aligned}
 \int_{0}^{x_i} y_i \frac{\lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}}}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}} dy_i &= \frac{1}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}} \int_{0}^{x_i} y_i \lambda_1^{(t)} \exp{\left\{-\lambda_1^{(t)} y_i\right\}} dy_i\\
 &= \frac{1}{1 - \exp{\left\{-\lambda_1^{(t)} x_i\right\}}} \left(\frac{1}{\lambda_1^{(t)}} - \frac{x_i + \frac{1}{\lambda_1^{(t)}}}{\exp{\{\lambda_1^{(t)} x_i\}}}\right)\\
 &= \frac{\frac{\exp{\left\{\lambda_1^{(t)} x_i\right\}}}{\lambda_1^{(t)}} - x_i - \frac{1}{\lambda_1^{(t)}}}{\exp{\left\{\lambda_1^{(t)} x_i\right\}} - 1} = \frac{1}{\lambda_1^{(t)}} - \frac{x_i}{\exp{\left\{\lambda_1^{(t)} x_i\right\}} - 1}.
-\end{align}
+\end{aligned}
+\end{equation}
 
 Using the same procedure for case II), a similar expression can be found. Now, using the results from both cases and $u_i$ as an indicator, the expected value of the log-likelihood function given $z$, $u$, $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ becomes
 
-
-\begin{align}
+\begin{equation}
+\begin{aligned}
+\label{eq:exp-1}
 E\left[n (\ln(\lambda_0) + \ln(\lambda_1)) - \lambda_0 \sum_{i=1}^{n} x_i - \lambda_1 \sum_{i=1}^{n} y_i\; \middle | \;z, u, \lambda_0^{(t)}, \lambda_1^{(t)}\right] &= n (\ln(\lambda_0) + \ln(\lambda_1))\\
 &- \lambda_0 \sum_{i=1}^{n} \left[u_i z_i + (1 - u_i) \left(\frac{1}{\lambda_0^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_0^{(t)} z_i\right\}} - 1}\right)\right]\\
 &- \lambda_1 \sum_{i=1}^{n} \left[(1 - u_i) z_i + u_i \left(\frac{1}{\lambda_1^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_1^{(t)} z_i\right\}} - 1}\right)\right],
-\end{align}
+\end{aligned}
+\end{equation}
 
 which is precisely what we were asked to show.
 
 \subsection{2.}
 
-We want to find the values of $\lambda_0$ and $\lambda_1$ for which the result from 1 is maximised. By differentiating the expression with respect to $\lambda_0$ and setting it equal to 0, and then doing the same for $\lambda_1$, we get
+We want to find the values of $\lambda_0$ and $\lambda_1$ for which \@ref(eq:exp-1) is maximised. By differentiating the expression with respect to $\lambda_0$ and setting it equal to 0, and then doing the same for $\lambda_1$, we get
 
 \begin{equation}
-\widehat{\lambda}_0 = n \left(\sum_{i=1}^{n} \left(u_i z_i + (1 - u_i) \left(\frac{1}{\lambda_0^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_0^{(t)} z_i\right\}} - 1}\right)\right)\right)^{-1}
+\widehat{\lambda}_0^{(t)} = n \left(\sum_{i=1}^{n} \left(u_i z_i + (1 - u_i) \left(\frac{1}{\lambda_0^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_0^{(t)} z_i\right\}} - 1}\right)\right)\right)^{-1}
 \end{equation}
 
 and
 
 \begin{equation}
-\widehat{\lambda}_1 = n \left(\sum_{i=1}^{n} \left((1 - u_i) z_i + u_i \left(\frac{1}{\lambda_1^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_1^{(t)} z_i\right\}} - 1}\right)\right)\right)^{-1}.
+\widehat{\lambda}_1^{(t)} = n \left(\sum_{i=1}^{n} \left((1 - u_i) z_i + u_i \left(\frac{1}{\lambda_1^{(t)}} - \frac{z_i}{\exp{\left\{\lambda_1^{(t)} z_i\right\}} - 1}\right)\right)\right)^{-1}.
 \end{equation}
 
-Starting out with some intial values $\lambda_0^{(0)}$ and $\lambda_1^{(0)}$, we are know able to implement an EM algorithm by iteratively calculating $\lambda_0^{(t+1)} = \widehat{\lambda}_0$ and $\lambda_1^{(t+1)} = \widehat{\lambda}_1$ using $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$, and then using these new values in the next iteration step. The initial values should be chosen among legal values -- that is, positive values -- but except from this restriction, the actual choice of initial values does not really matter for this specific problem, as the convergence properties are exceptionally good. However, EM algorithms in general tend to be quite slow, and hence good (i.e. more correct) starting values should be preferred in order to reduce the time until convergence. One possible way to get good initial values in this problem might be to calculate the mean of the $z$ values for which $u$ equals 1 and use the inverse of that as $\lambda_0^{(0)}$ -- the inverse of the mean of the remaining $z$ values should then become our $\lambda_1^{(0)}$. The function `EM()` below returns a `data.frame` object with all the $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ for $t = 0,...,t_{max}$, with $t_{max}$ the number of iterations.
+Starting out with some intial values $\lambda_0^{(0)}$ and $\lambda_1^{(0)}$, we are now able to implement an EM algorithm by iteratively calculating $\lambda_0^{(t+1)} = \widehat{\lambda}_0^{(t)}$ and $\lambda_1^{(t+1)} = \widehat{\lambda}_1^{(t)}$, and then using these new values in the next iteration step. The initial values should be chosen among legal values -- that is, positive values -- but except from this restriction, the actual choice of initial values does not really matter for this specific problem, as the convergence properties are exceptionally good. However, EM algorithms in general tend to be quite slow, and hence good starting values should be preferred in order to reduce the time until convergence. One possible way to get good initial values in this problem might be to calculate the mean of the $z$ values for which $u = 1$ and use the inverse of that as $\lambda_0^{(0)}$ -- the inverse of the mean of the remaining $z$ values should then become our $\lambda_1^{(0)}$. The function `EM()` below returns a `data.frame` object with all the $\lambda_0^{(t)}$ and $\lambda_1^{(t)}$ for $t = 0,...,t_{max}$, with $t_{max}$ the number of iterations.
 
 ```{r}
 # ##############################
@@ -98,7 +102,7 @@ em_estimate <- EM(z, u, lambda0_init, lambda1_init, iterations)
 
 Running the code above with $\lambda_0^{(0)} = \lambda_1^{(0)} = 5$, 20 iterations, and $z$ and $u$ from the provided files `z.txt` and `u.txt`, the estimates of $\widehat{\lambda}_0$ and $\widehat{\lambda}_1$ becomes `r sprintf("%.3f", em_estimate$lambda0[iterations+1])` and `r sprintf("%.3f", em_estimate$lambda1[iterations+1])` respectively. Figure \@ref(fig:emEstimate) shows that convergence happens almost instantly, and that about 10 iterations are in fact sufficient.
 
-(ref:emEstimate) Plots showing the convergence of $\widehat{\lambda}_0$ and $\widehat{\lambda}_1$ with number of iterations on the x-axis and the values of the variables on the y-axis.
+(ref:emEstimate) Plots showing the values of $\widehat{\lambda}_0$ and $\widehat{\lambda}_1$ with number of iterations on the x-axis and the values of the variables on the y-axis.
 
 ```{r emEstimate, fig.cap = "(ref:emEstimate)"}
 # ###################################
@@ -108,15 +112,15 @@ gg1 <- ggplot(em_estimate, aes(x = seq(0,iterations,1), y = lambda0)) +
   geom_line(color="red") +
   geom_point() +
   xlab("Number of iterations") +
-  ylab(bquote(lambda[0]))
+  ylab(bquote(hat(lambda)[0]))
 
 gg2 <- ggplot(em_estimate, aes(x = seq(0,iterations,1), y = lambda1)) +
   geom_line(color="red") +
   geom_point() +
   xlab("Number of iterations") +
-  ylab(bquote(lambda[1]))
+  ylab(bquote(hat(lambda)[1]))
 
-grid.arrange(gg1,gg2,ncol=2)
+ggarrange(gg1,gg2,ncol=2)
 ```
 
 
@@ -140,15 +144,15 @@ $n$ `<- length(z)`$\\$
 `Denote by` $\widehat{\lambda}_0^{*(b)}$ `and` $\widehat{\lambda}_1^{*(b)}$ `element number b in lambda0 and lambda1`$\\$
 `Denote by` $\widehat{\lambda}_0^{*(\cdot)}$ `and` $\widehat{\lambda}_1^{*(\cdot)}$ `the mean of the elements in lambda0 and lambda1`$\\$
 
-$\widehat{\text{se}}\left(\widehat{\lambda}_0\right)$ `<-` $\sqrt{\frac{1}{B-1} \sum_{b=1}^{B} \left(\widehat{\lambda}_0^{*(b)} - \widehat{\lambda}_0^{*(\cdot)}\right)}\\$
+$\widehat{\text{sd}}\left(\widehat{\lambda}_0\right)$ `<-` $\sqrt{\frac{1}{B-1} \sum_{b=1}^{B} \left(\widehat{\lambda}_0^{*(b)} - \widehat{\lambda}_0^{*(\cdot)}\right)}\\$
 $\vspace{4mm}$
-$\widehat{\text{se}}\left(\widehat{\lambda}_1\right)$ `<-` $\sqrt{\frac{1}{B-1} \sum_{b=1}^{B} \left(\widehat{\lambda}_1^{*(b)} - \widehat{\lambda}_1^{*(\cdot)}\right)}\\$
+$\widehat{\text{sd}}\left(\widehat{\lambda}_1\right)$ `<-` $\sqrt{\frac{1}{B-1} \sum_{b=1}^{B} \left(\widehat{\lambda}_1^{*(b)} - \widehat{\lambda}_1^{*(\cdot)}\right)}\\$
 $\vspace{4mm}$
 $\widehat{\text{bias}}\left(\widehat{\lambda_0}\right)$ `<-` $\frac{1}{B} \sum_{b=1}^{B} \widehat{\lambda}_0^{*(b)} - \widehat{\lambda}_0\\$
 $\vspace{4mm}$
 $\widehat{\text{bias}}\left(\widehat{\lambda_1}\right)$ `<-` $\frac{1}{B} \sum_{b=1}^{B} \widehat{\lambda}_1^{*(b)} - \widehat{\lambda}_1\\$
 $\vspace{4mm}$
-$\widehat{\text{corr}}\left(\widehat{\lambda}_0, \widehat{\lambda}_1\right)$ `<-` $\frac{\frac{1}{B-1} \sum_{b=1}^{B} \left(\widehat{\lambda}_0^{*(b)} - \widehat{\lambda}_0^{*(\cdot)}\right) \left(\widehat{\lambda}_1^{*(b)} - \widehat{\lambda}_1^{*(\cdot)}\right)}{\widehat{\text{se}}\left(\widehat{\lambda}_0\right) \cdot  \widehat{\text{se}}\left(\widehat{\lambda}_1\right)}\\$
+$\widehat{\text{corr}}\left(\widehat{\lambda}_0, \widehat{\lambda}_1\right)$ `<-` $\frac{\frac{1}{B-1} \sum_{b=1}^{B} \left(\widehat{\lambda}_0^{*(b)} - \widehat{\lambda}_0^{*(\cdot)}\right) \left(\widehat{\lambda}_1^{*(b)} - \widehat{\lambda}_1^{*(\cdot)}\right)}{\widehat{\text{sd}}\left(\widehat{\lambda}_0\right) \cdot  \widehat{\text{sd}}\left(\widehat{\lambda}_1\right)}\\$
 
 
 ```{r}
@@ -176,21 +180,21 @@ bootstrap <- function(z, u, lambda0_init, lambda1_init, iterations, numSamples) 
     lambda1 <- c(lambda1, temp$lambda1[iterations+1])
   }
   
-  se_lambda0 <- sqrt((1/(numSamples - 1)) * sum((lambda0 - mean(lambda0))^2))
-  se_lambda1 <- sqrt((1/(numSamples - 1)) * sum((lambda1 - mean(lambda1))^2))
+  sd_lambda0 <- sqrt((1/(numSamples - 1)) * sum((lambda0 - mean(lambda0))^2))
+  sd_lambda1 <- sqrt((1/(numSamples - 1)) * sum((lambda1 - mean(lambda1))^2))
   bias_lambda0 <- (1/numSamples) * sum(lambda0) - 
     EM(z, u, lambda0_init, lambda1_init, iterations)$lambda0[iterations+1]
   bias_lambda1 <- (1/numSamples) * sum(lambda1) - 
     EM(z, u, lambda0_init, lambda1_init, iterations)$lambda1[iterations+1]
   cov <- (1/(numSamples - 1)) * sum((lambda0 - mean(lambda0)) * (lambda1 - mean(lambda1)))
-  corr <- cov / (se_lambda0 * se_lambda1)
+  corr <- cov / (sd_lambda0 * sd_lambda1)
   
-  return(data.frame(se_lambda0, se_lambda1, bias_lambda0, bias_lambda1, corr))
+  return(data.frame(sd_lambda0, sd_lambda1, bias_lambda0, bias_lambda1, corr))
 }
 
 bootstrapRun <- bootstrap(z, u, 5, 5, 20, 1000)
 ```
 
-The function `bootstrap()` is an implementation of this pseudocode. Running the function with intial value of 5 for $\lambda_0^{(0)}$ and $\lambda_1^{(0)}$, 20 iterations of the EM algorithm per bootstrap sample, and 1000 bootstrap samples in total, gives $\widehat{\text{se}}\left(\widehat{\lambda}_0\right) = `r sprintf("%.3f", bootstrapRun$se_lambda0)`$, $\widehat{\text{se}}\left(\widehat{\lambda}_1\right) = `r sprintf("%.3f", bootstrapRun$se_lambda1)`$, $\widehat{\text{bias}}\left(\widehat{\lambda}_0\right) = `r sprintf("%.3f", bootstrapRun$bias_lambda0)`$, $\widehat{\text{bias}}\left(\widehat{\lambda}_1\right) = `r sprintf("%.3f", bootstrapRun$bias_lambda1)`$, and $\widehat{\text{corr}}\left(\widehat{\lambda}_0, \widehat{\lambda}_1\right) = `r sprintf("%.3f", bootstrapRun$corr)`$.
+The function `bootstrap()` is an implementation of this pseudocode. Running the function with intial value of 5 for $\lambda_0^{(0)}$ and $\lambda_1^{(0)}$, 20 iterations of the EM algorithm per bootstrap sample, and 1000 bootstrap samples in total, gives $\widehat{\text{sd}}\left(\widehat{\lambda}_0\right) = `r sprintf("%.3f", bootstrapRun$sd_lambda0)`$, $\widehat{\text{sd}}\left(\widehat{\lambda}_1\right) = `r sprintf("%.3f", bootstrapRun$sd_lambda1)`$, $\widehat{\text{bias}}\left(\widehat{\lambda}_0\right) = `r sprintf("%.3f", bootstrapRun$bias_lambda0)`$, $\widehat{\text{bias}}\left(\widehat{\lambda}_1\right) = `r sprintf("%.3f", bootstrapRun$bias_lambda1)`$, and $\widehat{\text{corr}}\left(\widehat{\lambda}_0, \widehat{\lambda}_1\right) = `r sprintf("%.3f", bootstrapRun$corr)`$.
 
 When deciding whether or not to subtract the bias from the estimator when using boostrapping, one has to consider the trade-off between getting a less biased estimator and having as little variance as possible. In this case, the biases are quite small compared to the estimated values of $\lambda_0$ and $\lambda_1$, and due to this there is a possibility that bias correction only results in the addition of noise. Indeed, the biases presented above are only estimates of the real biases, and therefore bias correction is not likely to result in a completely unbiased estimator. Hence, it seems reasonable to prefer the maximum likelihood estimates over the bias corrected estimates.
