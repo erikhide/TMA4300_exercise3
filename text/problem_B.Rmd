@@ -10,7 +10,6 @@ We download the data file `bilirubin.txt` and display the logarithms of the conc
 # Prepare data
 # ############
 
-
 bilirubin <- read.table("../files/bilirubin.txt", header = TRUE) %>% as_tibble()
 
 ```
